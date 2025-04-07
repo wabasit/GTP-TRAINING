@@ -17,3 +17,5 @@ def clean(data):
 
     data['production_countries'].apply(lambda countries: '|'.join(c['name'] for c in countries)\
                                         if isinstance(countries, list) else '')
+    
+    return data
