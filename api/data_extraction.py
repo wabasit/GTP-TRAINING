@@ -1,9 +1,25 @@
+from functools import wraps
+import sys
 
 import requests
 import pandas as pd
+
 from config import TOKEN
 
-        
+def memoize(func):
+    cache = {}
+
+    @wraps
+    def wrapper(*args, **kwargs):
+        key = str(args) + str(kwargs)
+
+        if key not in cache:
+            cache[key] = func(*args, **kwargs)
+            return cache[key]
+    
+    return wrapper
+
+@memoize    
 def extract_data(self):
 
     movie_ids = [299534, 19995, 140607, 299536, 597, 135397,\
