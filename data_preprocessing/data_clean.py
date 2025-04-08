@@ -1,9 +1,5 @@
 import pandas as pd
 
-from api.data_extraction import extract_data
-
-data = extract_data()
-
 
 def clean(data):
     cols_to_drop = ['adult', 'imdb_id', 'original_title', 'video', 'homepage']
