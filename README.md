@@ -6,7 +6,7 @@ This project focuses on cleaning and preprocessing a movie dataset to prepare it
 
 ---
 
-## 📌 Objectives
+## Objectives
 
 - Replace unrealistic values (e.g., `0` in `budget`, `revenue`, `runtime`) with `NaN`.
 - Convert financial columns to represent values in **millions of dollars**.
@@ -15,7 +15,7 @@ This project focuses on cleaning and preprocessing a movie dataset to prepare it
 
 ---
 
-## 🛠️ Steps Performed
+## 🛠Steps Performed
 
 ### 1. Replacing Unrealistic Values
 Replaced zeros in `budget`, `revenue`, and `runtime` columns with `NaN` to reflect missing or invalid data.
