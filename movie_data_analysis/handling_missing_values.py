@@ -11,8 +11,6 @@ def convert_values(data):
     unrealistic_val = ['budget', 'revenue', 'runtime']
     placeholder_replace = ['overview', 'tagline']
     data[unrealistic_val] = [data[d].replace(0, np.nan) for d in unrealistic_val]
-    data['budget_musd'] = data['budget'] / 1000000
-    data['revenue_musd'] = data['revenue'] / 1000000
     data[placeholder_replace] = [data[d].replace('No Data', np.nan) for d in placeholder_replace]
     data.loc[data['vote_counts']==0, 'vote_average'] = np.nan
     data['Released'] = data.loc[data['status']=='Released', 'status']
