@@ -7,7 +7,7 @@ from config import TOKEN, API_KEY
     
 def extract_data():
     """
-    This function extracts, and dump movie data from the Movies API and dump into a json file.
+    This function extracts, and dump movie data from the Movies API and dump into a csv file.
     Some specific movie ids were specified for extraction.
     """
 

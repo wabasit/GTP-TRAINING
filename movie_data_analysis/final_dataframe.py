@@ -9,6 +9,11 @@ plot_revenue_vs_budget, plot_roi_distribution_by_genre, plot_yearly_trends
 )
 
 def generate_report():
+    """
+    This function implements all functions by automating them. It fetches the data, clean, analyze and visualize
+    the data.
+    The clean data is then saved as a csv file 
+    """
     print("Fetching movie data...")
     # data = extract_data()
     data = pd.read_csv('raw_movie_data.csv')
