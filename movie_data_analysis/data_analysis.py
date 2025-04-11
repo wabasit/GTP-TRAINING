@@ -6,16 +6,20 @@ def calculate_profit(data):
     return data
 
 def calculate_roi(data):
+    data['budget_musd'] = data['budget'] / 1000000
+    data['revenue_musd'] = data['revenue'] / 1000000
     data['roi'] = data['revenue_musd'] / data['budget_musd']
     data.loc[data['budget_musd'] == 0, 'roi'] = np.nan
     return data
 
 def rank_movies(data, column, ascending=False, top_n=10, min_votes=0):
+    data['profit_musd'] = data['revenue_musd'] - data['budget_musd']
     filtered = data[data['vote_count'] >= min_votes]
     ranked = filtered.sort_values(by=column, ascending=ascending).head(top_n)
     return ranked[['title', column, 'vote_count']]
 
 def get_top_directors(data, top_n=10):
+    data['director'] = data['credits'].apply(lambda x: [i['job'] for i in x] if isinstance(x, list) else '')
     grouped = data.groupby('director').agg(
         total_movies=('id', 'count'),
         total_revenue=('revenue_musd', 'sum'),
