@@ -138,3 +138,11 @@ FROM orders o
 JOIN customers c ON o.customer_id = c.customer_id
 JOIN orderdetails od ON o.order_id = od.order_id;
 
+-- View for low stocks
+CREATE VIEW vw_LowStock AS
+SELECT product_id, stock_quantity, reorder_level,
+       (reorder_level - stock_quantity) AS Deficit
+FROM products
+WHERE stock_quantity < ReorderLevel;
+
+
