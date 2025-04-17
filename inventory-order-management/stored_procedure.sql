@@ -1,5 +1,4 @@
 -- Creating a stored procedure to automate the entire process of ordering and logging
-
 CREATE PROCEDURE Placeorder
     @customer_id INT,
     @product_id INT,
@@ -32,4 +31,37 @@ BEGIN
     -- Log inventory change
     INSERT INTO inventoryLogs (product_id, changeType, quantity_changed)
     VALUES (@product_id, 'order', -@quantity);
+END;
+
+-- Creating a stored procedure to replenish stocks that are running out
+CREATE PROCEDURE ReplenishStock
+AS
+BEGIN
+    DECLARE @product_id INT;
+
+    -- Cursor to loop through all low-stock products
+    DECLARE low_stock_cursor CURSOR FOR
+    SELECT product_id
+    FROM products
+    WHERE stock_quantity <= reorder_level;
+
+    OPEN low_stock_cursor;
+    FETCH NEXT FROM low_stock_cursor INTO @product_id;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Update stock
+        UPDATE products
+        SET stock_quantity = stock_quantity + 10
+        WHERE product_id = @product_id;
+
+        -- Log the replenishment
+        INSERT INTO inventoryLogs (product_id, changeType, quantity_changed)
+        VALUES (@product_id, 'Replenish', 10);
+
+        FETCH NEXT FROM low_stock_cursor INTO @product_id;
+    END;
+
+    CLOSE low_stock_cursor;
+    DEALLOCATE low_stock_cursor;
 END;
