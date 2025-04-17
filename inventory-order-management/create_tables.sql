@@ -129,3 +129,12 @@ SELECT c.customer_id, SUM(o.total_amount) AS TotalSpent,
        END AS SpendingTier
 FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id;
+
+-- Order views for simplifying access
+CREATE VIEW vw_OrderSummary AS
+SELECT o.order_id, c.customer_name AS CustomerName, o.order_date, o.total_amount,
+       COUNT(od.product_id) AS ItemsOrdered
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN orderdetails od ON o.order_id = od.order_id;
+
