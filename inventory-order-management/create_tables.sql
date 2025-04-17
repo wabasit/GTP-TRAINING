@@ -1,3 +1,6 @@
+USE inventory-order-management
+
+-- Creating products table
 CREATE TABLE products(
 	product_id INT PRIMARY KEY IDENTITY (1, 1),
 	product_name VARCHAR(30) NOT NULL,
@@ -8,6 +11,7 @@ CREATE TABLE products(
 
 );
 
+-- Creating customers table
 CREATE TABLE customers(
 	customer_id INT PRIMARY KEY IDENTITY (100, 1), 
 	customer_name VARCHAR(30) NOT NULL, 
@@ -16,6 +20,7 @@ CREATE TABLE customers(
 
 );
 
+-- Creating orders table
 CREATE TABLE orders(
 	order_id INT PRIMARY KEY IDENTITY (1000, 1), 
 	customer_id INT, 
@@ -25,6 +30,7 @@ CREATE TABLE orders(
 
 );
 
+-- Creating orderdetails table
 CREATE TABLE orderdetails (
     order_detail_id INT PRIMARY KEY IDENTITY(1,1),
     order_id INT,                                   
@@ -35,6 +41,7 @@ CREATE TABLE orderdetails (
     FOREIGN KEY (product_id) REFERENCES Products(product_id)
 );
 
+-- Creating inventorylogs table
 CREATE TABLE inventorylogs (
     log_id INT PRIMARY KEY IDENTITY(1,1),           
     product_id INT,                                 
@@ -43,3 +50,42 @@ CREATE TABLE inventorylogs (
     quantity_changed INT,                           
     FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+
+-- Viewing the tables created
+SELECT * FROM customers;
+SELECT * FROM inventorylogs;
+SELECT * FROM orderdetails;
+SELECT * FROM orders;
+SELECT * FROM products;
+
+-- Populating data into the customers, products, and orders table for query testing
+
+-- Populating data into the customers table
+INSERT INTO customers (customer_name, email, phone_number)
+VALUES 
+('Emily Mensah', 'emily.mensah@example.com', '0201112233'),
+('Frank Owusu', 'frank.owusu@example.com', '0507654321'),
+('Grace Bediako', 'grace.bediako@example.com', '0274455667'),
+('Henry Nartey', 'henry.nartey@example.com', '0243344556'),
+('Ivy Asante', 'ivy.asante@example.com', '0231122334'),
+('Alice Johnson', 'alice.johnson@example.com', '0551234567'),
+('Brian Smith', 'brian.smith@example.com', '0249876543'),
+('Cynthia Adams', 'cynthia.adams@example.com', '0263214321'),
+('Daniel Boateng', 'daniel.boateng@example.com', '0207654321');
+
+-- Populating data into the products table
+INSERT INTO products (product_name, category_id, price, stock_quantity, reorder_level)
+VALUES
+('Laptop Pro 15"', 'Electronics', 1200.00, 15, 5),
+('Wireless Mouse', 'Accessories', 25.00, 40, 10),
+('Office Chair', 'Furniture', 150.00, 5, 5),
+('Standing Desk', 'Furniture', 300.00, 3, 2),
+('Smartphone X', 'Electronics', 850.00, 20, 7),
+('Noise Cancelling Headphones', 'Electronics', 200.00, 12, 4),
+('Webcam 1080p', 'Accessories', 75.00, 25, 10),
+('Portable SSD 1TB', 'Electronics', 130.00, 18, 6),
+('Monitor 27"', 'Electronics', 300.00, 7, 3),
+('Graphic Tablet', 'Accessories', 90.00, 10, 5);
+
+--Implementing the stored procedure to place orders
+EXEC PlaceOrder @customer_id = 100, @product_id = 6, @quantity = 3;

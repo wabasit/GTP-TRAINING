@@ -1,3 +1,5 @@
+-- Creating a stored procedure to automate the entire process of ordering and logging
+
 CREATE PROCEDURE Placeorder
     @customer_id INT,
     @product_id INT,
