@@ -100,3 +100,13 @@ WHERE customer_id = 100;
 SELECT product_id, product_name
 FROM products
 WHERE stock_quantity < reorder_level;
+
+--Customer spending habit
+SELECT c.customer_id, o.total_amount,
+	CASE
+		WHEN o.total_amount >= 1000 THEN 'GOLD'
+		WHEN o.total_amount >= 500 THEN 'SILVER'
+		ELSE 'BRONZE'
+	END AS SpendingHabit
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id;
