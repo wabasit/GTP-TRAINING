@@ -119,3 +119,13 @@ SELECT od.quantity, od.price AS actual_price,
 		ELSE od.price
 	END AS discounted_price
 FROM orderdetails od;
+
+-- Customer categorization based on spending habit
+SELECT c.customer_id, SUM(o.total_amount) AS TotalSpent,
+       CASE
+           WHEN SUM(o.total_amount) >= 1000 THEN 'GOLD'
+           WHEN SUM(o.total_amount) >= 500 THEN 'SILVER'
+           ELSE 'BRONZE'
+       END AS SpendingTier
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id;
