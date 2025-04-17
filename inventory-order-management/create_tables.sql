@@ -37,8 +37,8 @@ CREATE TABLE orderdetails (
     product_id INT,                                
     quantity INT,                                  
     price DECIMAL(10,2),                           
-    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 -- Creating inventorylogs table
