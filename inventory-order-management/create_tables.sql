@@ -145,4 +145,11 @@ SELECT product_id, stock_quantity, reorder_level,
 FROM products
 WHERE stock_quantity < ReorderLevel;
 
+-- Implementing Indexes for query optimization 
+CREATE INDEX idx_orders_customer_id ON Orders(customer_id);
+CREATE INDEX idx_orderdetails_order_id ON OrderDetails(order_id);
+CREATE INDEX idx_orderdetails_product_id ON OrderDetails(product_id);
+CREATE INDEX idx_products_stock_quantity ON Products(stock_quantity);
+
+
 
