@@ -89,3 +89,14 @@ VALUES
 
 --Implementing the stored procedure to place orders
 EXEC PlaceOrder @customer_id = 100, @product_id = 6, @quantity = 3;
+
+-- Summaries of order
+SELECT o.order_id, o.order_date, o.total_amount, od.quantity
+FROM orders o
+JOIN orderdetails od ON o.order_id = od.order_id
+WHERE customer_id = 100;
+
+-- Low on stocks
+SELECT product_id, product_name
+FROM products
+WHERE stock_quantity < reorder_level;
