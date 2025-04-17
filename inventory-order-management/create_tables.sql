@@ -110,3 +110,12 @@ SELECT c.customer_id, o.total_amount,
 	END AS SpendingHabit
 FROM customers c
 JOIN orders o ON c.customer_id = o.customer_id;
+
+--Discount on large orders
+SELECT od.quantity, od.price AS actual_price,
+	CASE
+		WHEN od.quantity >=20 THEN od.price * 0.85
+		WHEN od.quantity >=10 THEN od.price * 0.90
+		ELSE od.price
+	END AS discounted_price
+FROM orderdetails od;
