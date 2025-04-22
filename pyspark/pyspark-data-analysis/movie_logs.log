@@ -1,0 +1,35 @@
+2025-04-22 14:02:07,242 - ERROR - Movies: [] failed
+2025-04-22 14:03:27,655 - INFO - <bound method Response.json of <Response [200]>> with ID: 135397 has been fetched successfully
+2025-04-22 14:03:29,229 - ERROR - The movie with ID: 20818 failed to be extracted
+2025-04-22 14:03:33,503 - INFO - <bound method Response.json of <Response [200]>> with ID: 24428 has been fetched successfully
+2025-04-22 14:03:34,886 - INFO - <bound method Response.json of <Response [200]>> with ID: 168259 has been fetched successfully
+2025-04-22 14:03:36,425 - INFO - <bound method Response.json of <Response [200]>> with ID: 99861 has been fetched successfully
+2025-04-22 14:03:39,167 - INFO - <bound method Response.json of <Response [200]>> with ID: 284054 has been fetched successfully
+2025-04-22 14:03:40,497 - INFO - <bound method Response.json of <Response [200]>> with ID: 12445 has been fetched successfully
+2025-04-22 14:03:41,913 - INFO - <bound method Response.json of <Response [200]>> with ID: 181808 has been fetched successfully
+2025-04-22 14:03:43,314 - INFO - <bound method Response.json of <Response [200]>> with ID: 330457 has been fetched successfully
+2025-04-22 14:03:47,503 - INFO - <bound method Response.json of <Response [200]>> with ID: 351286 has been fetched successfully
+2025-04-22 14:03:49,440 - INFO - <bound method Response.json of <Response [200]>> with ID: 109445 has been fetched successfully
+2025-04-22 14:03:52,438 - INFO - <bound method Response.json of <Response [200]>> with ID: 321612 has been fetched successfully
+2025-04-22 14:03:55,363 - INFO - <bound method Response.json of <Response [200]>> with ID: 260513 has been fetched successfully
+2025-04-22 14:03:55,878 - INFO - Movies: [<bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>, <bound method Response.json of <Response [200]>>] were successfully fetched
+2025-04-22 14:15:16,780 - ERROR - Failed to fetch movie ID 0: 404 Client Error: Not Found for url: https://api.themoviedb.org/3/movie/0?api_key=f55f6f66aae0bfc6cb7960568f95411e&append_to_response=credits
+2025-04-22 14:15:20,115 - INFO - Movie 'Avengers: Endgame' (ID: 299534) fetched successfully
+2025-04-22 14:15:21,510 - INFO - Movie 'Avatar' (ID: 19995) fetched successfully
+2025-04-22 14:15:22,978 - INFO - Movie 'Star Wars: The Force Awakens' (ID: 140607) fetched successfully
+2025-04-22 14:15:25,562 - INFO - Movie 'Avengers: Infinity War' (ID: 299536) fetched successfully
+2025-04-22 14:15:26,871 - INFO - Movie 'Titanic' (ID: 597) fetched successfully
+2025-04-22 14:15:33,438 - ERROR - Failed to fetch movie ID 135397: HTTPSConnectionPool(host='api.themoviedb.org', port=443): Read timed out.
+2025-04-22 14:15:34,713 - ERROR - Failed to fetch movie ID 20818: 404 Client Error: Not Found for url: https://api.themoviedb.org/3/movie/20818?api_key=f55f6f66aae0bfc6cb7960568f95411e&append_to_response=credits
+2025-04-22 14:15:36,138 - INFO - Movie 'The Avengers' (ID: 24428) fetched successfully
+2025-04-22 14:15:37,550 - INFO - Movie 'Furious 7' (ID: 168259) fetched successfully
+2025-04-22 14:15:38,884 - INFO - Movie 'Avengers: Age of Ultron' (ID: 99861) fetched successfully
+2025-04-22 14:15:40,011 - INFO - Movie 'Black Panther' (ID: 284054) fetched successfully
+2025-04-22 14:15:41,088 - INFO - Movie 'Harry Potter and the Deathly Hallows: Part 2' (ID: 12445) fetched successfully
+2025-04-22 14:15:42,590 - INFO - Movie 'Star Wars: The Last Jedi' (ID: 181808) fetched successfully
+2025-04-22 14:15:43,628 - INFO - Movie 'Frozen II' (ID: 330457) fetched successfully
+2025-04-22 14:15:44,788 - INFO - Movie 'Jurassic World: Fallen Kingdom' (ID: 351286) fetched successfully
+2025-04-22 14:15:45,872 - INFO - Movie 'Frozen' (ID: 109445) fetched successfully
+2025-04-22 14:15:47,053 - INFO - Movie 'Beauty and the Beast' (ID: 321612) fetched successfully
+2025-04-22 14:15:48,198 - INFO - Movie 'Incredibles 2' (ID: 260513) fetched successfully
+2025-04-22 14:15:49,058 - INFO - Saved 16 movies to movie_data.csv
