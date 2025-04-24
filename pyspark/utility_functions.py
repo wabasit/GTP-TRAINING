@@ -30,4 +30,9 @@ def clean_data(df):
     df = df.withColumn("belongs_to_collection", collection_name_udf(col("belongs_to_collection")))
     return df
 
-
+def handle_missing_values(df):
+    df = df.withColumn("budget", col("budget").cast("double")) \
+           .withColumn("id", col("id").cast("long")) \
+           .withColumn("popularity", col("popularity").cast("double")) \
+           .withColumn("release_date", to_date("release_date"))
+    return df
