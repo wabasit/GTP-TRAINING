@@ -72,3 +72,10 @@ def filter_movies_by_genre_and_actor(df, genre: str, actor: str):
 def filter_released_movies(df):
     return df.filter(col("status") == "Released").drop("status")
 
+def filter_valid_movies(df):
+    df = df.dropDuplicates(["id"]).dropna(subset=["id", "title"])
+    
+    # Count non-null columns (emulate df.count(axis=1) >= 10)
+    count_expr = sum(when(col(c).isNotNull(), 1).otherwise(0) for c in df.columns)
+    df = df.withColumn("non_null_count", count_expr)
+    return df.filter(col("non_null_count") >= 10).drop("non_null_count")
