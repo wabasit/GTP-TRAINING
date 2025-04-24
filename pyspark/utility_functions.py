@@ -56,3 +56,8 @@ def calculate_financial_metrics(df):
     df = df.withColumn("roi", col("revenue_musd") / col("budget_musd"))
     df = df.withColumn("roi", when(col("budget_musd") == 0, None).otherwise(col("roi")))
     return df
+
+def filter_movies_by_actor_director(df, actor: str, director: str):
+    return df.filter(
+        col("cast").rlike(actor) & col("director").rlike(director)
+    ).orderBy("runtime")
