@@ -61,3 +61,14 @@ def filter_movies_by_actor_director(df, actor: str, director: str):
     return df.filter(
         col("cast").rlike(actor) & col("director").rlike(director)
     ).orderBy("runtime")
+
+
+
+def filter_movies_by_genre_and_actor(df, genre: str, actor: str):
+    return df.filter(
+        col("genres").rlike(genre) & col("cast").rlike(actor)
+    ).orderBy(col("vote_average").desc())
+
+def filter_released_movies(df):
+    return df.filter(col("status") == "Released").drop("status")
+
