@@ -36,3 +36,16 @@ def handle_missing_values(df):
            .withColumn("popularity", col("popularity").cast("double")) \
            .withColumn("release_date", to_date("release_date"))
     return df
+
+def convert_unrealistic_values(df):
+    zero_to_null = lambda colname: when(col(colname) == 0, None).otherwise(col(colname))
+    df = df.withColumn("budget", zero_to_null("budget")) \
+           .withColumn("revenue", zero_to_null("revenue")) \
+           .withColumn("runtime", zero_to_null("runtime"))
+
+    for text_col in ['overview', 'tagline']:
+        df = df.withColumn(text_col, when(col(text_col) == "No Data", None).otherwise(col(text_col)))
+
+    df = df.filter(col("id").isNotNull() & col("title").isNotNull())
+    return df.dropDuplicates(["id"])
+
