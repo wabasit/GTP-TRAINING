@@ -49,3 +49,10 @@ def convert_unrealistic_values(df):
     df = df.filter(col("id").isNotNull() & col("title").isNotNull())
     return df.dropDuplicates(["id"])
 
+def calculate_financial_metrics(df):
+    df = df.withColumn("budget_musd", col("budget") / 1e6)
+    df = df.withColumn("revenue_musd", col("revenue") / 1e6)
+    df = df.withColumn("profit_musd", col("revenue_musd") - col("budget_musd"))
+    df = df.withColumn("roi", col("revenue_musd") / col("budget_musd"))
+    df = df.withColumn("roi", when(col("budget_musd") == 0, None).otherwise(col("roi")))
+    return df
