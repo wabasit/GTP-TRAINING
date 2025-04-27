@@ -1,13 +1,14 @@
 import requests
 import time
 import logging
-import pandas as pd
-
+import json
+from pyspark.sql import SparkSession
+from utility_functions import SCHEMA
 from config import API_KEY
 
 def fetch_api():
     """
-    This function extracts and saves movie data from the Movies API into a CSV file.
+    This function extracts and saves movie data from the Movies API into a JSON file.
     It handles errors and skips movies that are not found or return errors.
     """
     movie_ids = [0, 299534, 19995, 140607, 299536, 597, 135397,
@@ -35,12 +36,16 @@ def fetch_api():
 
     if movie_data:
         try:
-            df = pd.json_normalize(movie_data)
-            df.to_csv('pyspark-data-analysis/movie_data.csv', index=False)
-            logging.info(f"Saved {len(df)} movies to movie_data.csv")
-            return df
+            with open('pyspark-data-analysis/movie_data.json', 'w', encoding='utf-8') as f:
+                json.dump(movie_data, f, ensure_ascii=False, indent=4)
+                spark = SparkSession.builder \
+                        .appName("TMDB Movie Loader") \
+                        .getOrCreate()
+                df = spark.read.schema(SCHEMA()).json("pyspark-data-analysis/movie_data.json")
+            logging.info(f"Saved {len(movie_data)} movies to movie_data.json")
+            return movie_data
         except Exception as e:
-            logging.error(f"Failed to save movie_data.csv: {e}")
+            logging.error(f"Failed to save movie_data.json: {e}")
             return None
     else:
         logging.error(f"No movies fetched. Failed IDs: {failed_movies}")
