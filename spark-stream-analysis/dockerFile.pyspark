@@ -10,4 +10,6 @@ RUN mkdir -p /home/jovyan/.jupyter
 # Write the config setting
 RUN echo "c.NotebookApp.autosave_interval = 30000" >> /home/jovyan/.jupyter/jupyter_notebook_config.py
 
+# Start Jupyter Notebook (without token for easier dev use)
+CMD ["start-notebook.sh", "--NotebookApp.token=''", "--NotebookApp.password=''"]
 

@@ -1,1 +1,5 @@
 faker
+psycopg2-binary
+sqlalchemy
+pandas
+pyarrow
