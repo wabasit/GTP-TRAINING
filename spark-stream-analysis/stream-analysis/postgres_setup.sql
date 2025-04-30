@@ -1,12 +1,12 @@
 -- Create database
-CREATE DATABASE ecommerce
+CREATE DATABASE ecommerce_db
     WITH 
     OWNER = postgres
     ENCODING = 'UTF8'
     CONNECTION LIMIT = -1;
 
 -- Connect to the database
-\c ecommerce
+\c ecommerce_db
 
 -- Main events table with partitioning by event_time
 CREATE TABLE user_events (
