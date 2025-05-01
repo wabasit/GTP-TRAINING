@@ -62,6 +62,8 @@ services:
         - postgres
       volumes:
         - ./notebooks:/home/jovyan/work
+        - ./data:/opt/workspace/data
+        - ./jars:/home/jovyan/jars
 
 
 networks:
