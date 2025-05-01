@@ -3,13 +3,8 @@ FROM jupyter/pyspark-notebook
 # Install extra Python libraries
 RUN pip install sqlalchemy psycopg2-binary pandas pyarrow
 
-# Create an autosave interval of 30 seconds for the Jupyter Notebook
-# Make directory inside the container
+# Optional: Create config dir (but no need to write autosave setting)
 RUN mkdir -p /home/jovyan/.jupyter
 
-# Write the config setting
-RUN echo "c.NotebookApp.autosave_interval = 30000" >> /home/jovyan/.jupyter/jupyter_notebook_config.py
-
-# Start Jupyter Notebook (without token for easier dev use)
-CMD ["start-notebook.sh", "--NotebookApp.token=''", "--NotebookApp.password=''"]
-
+# Start the notebook with no token or password for dev
+CMD ["start-notebook.sh", "--ServerApp.token=''", "--ServerApp.password=''"]
