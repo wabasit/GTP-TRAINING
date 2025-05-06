@@ -34,11 +34,11 @@ def main(interval):
     Initialize Kafka producer and send heartbeat messages at given interval.
     """
     producer = Producer({'bootstrap.servers': 'localhost:9092'})
-    print(f"Sending data to Kafka topic 'heartbeats' every {interval}s...")
+    print(f"Sending data to Kafka topic 'heart_rate_stream' every {interval}s...")
     
     while True:
         data = generate_data()
-        producer.produce('heartbeats', json.dumps(data), callback=delivery_report)
+        producer.produce('heart_rate_stream', json.dumps(data), callback=delivery_report)
         producer.poll(0)
         time.sleep(interval)
 
