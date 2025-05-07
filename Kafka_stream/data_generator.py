@@ -6,6 +6,7 @@ Generates random heart rate data and sends to Kafka topic at configurable interv
 
 import json
 import time
+from datetime import datetime
 import random
 import os
 import argparse
@@ -17,7 +18,7 @@ def generate_data():
     """
     return {
         "customer_id": random.randint(1000, 9999),
-        "timestamp": int(time.time()),
+        "timestamp": datetime.utcnow().isoformat() + "Z",
         "heart_rate": random.randint(60, 120)
     }
 
