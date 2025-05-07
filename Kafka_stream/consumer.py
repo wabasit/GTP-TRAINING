@@ -21,7 +21,7 @@ consumer = Consumer({
     'group.id': 'heart_group',
     'auto.offset.reset': 'earliest'
 })
-consumer.subscribe(['heartbeats'])
+consumer.subscribe(['heart_rate_stream'])
 
 # PostgreSQL connection
 conn = psycopg2.connect(dbname="heartbeats_db", user="heart_user", password="heart_pass", host="localhost")
