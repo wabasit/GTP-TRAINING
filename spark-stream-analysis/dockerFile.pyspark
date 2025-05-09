@@ -1,10 +1,10 @@
 FROM jupyter/pyspark-notebook
 
 # Install extra Python libraries
-RUN pip install sqlalchemy psycopg2-binary pandas pyarrow
+RUN /opt/conda/bin/pip install sqlalchemy psycopg2-binary pandas pyarrow faker pyspark
 
-# Optional: Create config dir (but no need to write autosave setting)
+# Optional: Create config dir
 RUN mkdir -p /home/jovyan/.jupyter
 
-# Start the notebook with no token or password for dev
+# Start the notebook with no token or password for dev (overridden by compose command)
 CMD ["start-notebook.sh", "--ServerApp.token=''", "--ServerApp.password=''"]

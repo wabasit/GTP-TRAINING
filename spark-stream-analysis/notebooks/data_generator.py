@@ -31,7 +31,9 @@ def generate_event():
 print("Generating 30,000 events...")
 start_time = datetime.now()
 
-with open('data/user_events.csv', 'w', newline='', encoding='utf-8') as csvfile:
+# Use the mounted /opt/workspace/data directory
+output_path = '/opt/workspace/data/user_events.csv'
+with open(output_path, 'w', newline='', encoding='utf-8') as csvfile:
     fieldnames = ['event_id', 'user_id', 'product_id', 'event_type', 
                  'event_time', 'price', 'category', 'user_device', 'user_location']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -46,4 +48,5 @@ with open('data/user_events.csv', 'w', newline='', encoding='utf-8') as csvfile:
         print(f"Written {len(batch)} records (total: {_ + batch_size})")
 
 print(f"\n Successfully generated 30,000 events in {(datetime.now() - start_time).total_seconds():.2f} seconds")
-print("File saved to: user_events.csv")
+print(f"{output_path} created")
+print("You can now run the Spark Streaming job to read this CSV file and write to PostgreSQL.")

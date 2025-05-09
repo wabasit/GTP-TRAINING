@@ -12,6 +12,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - spark-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "ecommerce_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   spark-master:
     image: bitnami/spark:3.5
@@ -27,6 +32,11 @@ services:
       - "7077:7077"
     networks:
       - spark-network
+    healthcheck:
+      test: ["CMD", "ps", "-C", "java"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   spark-worker:
     image: bitnami/spark:3.5
@@ -41,30 +51,42 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
     depends_on:
-      - spark-master
+      spark-master:
+        condition: service_healthy
     networks:
       - spark-network
 
-
   pyspark-notebook:
-      build:
-        context: .
-        dockerfile: Dockerfile.pyspark
-      container_name: pyspark-notebook
-      environment:
-        - SPARK_MASTER=spark://spark-master:7077
-      ports:
-        - "8888:8888"
-      networks:
-        - spark-network
-      depends_on:
-        - spark-master
-        - postgres
-      volumes:
-        - ./notebooks:/home/jovyan/work
-        - ./data:/opt/workspace/data
-        - ./jars:/home/jovyan/jars
-
+    build:
+      context: .
+      dockerfile: Dockerfile.pyspark
+    container_name: pyspark-notebook
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+    ports:
+      - "8888:8888"
+    networks:
+      - spark-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      spark-master:
+        condition: service_healthy
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./data:/opt/workspace/data
+      - ./jars:/home/jovyan/jars
+    command: >
+      bash -c "/opt/conda/bin/python -c 'import pyspark; print(\"PySpark is available\")' &&
+               /opt/conda/bin/python /home/jovyan/work/data_generator.py &
+               sleep 15 &&
+               /opt/conda/bin/python /home/jovyan/work/spark_streaming_to_postgres.py"
+    healthcheck:
+      test: ["CMD", "/opt/conda/bin/python", "-c", "import pyspark; print('PySpark available')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 networks:
   spark-network:
