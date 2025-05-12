@@ -10,12 +10,25 @@ import psycopg2.extras
 from confluent_kafka import Consumer
 import time
 import os
+import logging
+
+# Configure logging
+logs_dir = os.getenv("LOGS_DIR", "logs")  # Default to 'logs' if not set
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] - %(message)s',
+    handlers=[
+        logging.FileHandler(os.path.join(logs_dir, "consumer.log")),
+        logging.StreamHandler()  # Also output to console
+    ]
+)
+logger = logging.getLogger(__name__)
 
 def connect_db():
     """
     Establish a connection to PostgreSQL with retry logic.
     """
-    print("Attempting to connect to PostgreSQL...")
+    logger.info("Attempting to connect to PostgreSQL...")
     for _ in range(5):
         try:
             conn = psycopg2.connect(
@@ -25,10 +38,10 @@ def connect_db():
                 host=os.getenv("POSTGRES_HOST", "localhost"),
                 port="5432"
             )
-            print("Database connection successful!")
+            logger.info("Database connection successful!")
             return conn
         except psycopg2.OperationalError as e:
-            print(f"Connection failed: {e}. Retrying in 5 seconds...")
+            logger.error(f"Connection failed: {e}. Retrying in 5 seconds...")
             time.sleep(5)
     raise Exception("Failed to connect to database after retries")
 
@@ -39,13 +52,13 @@ def is_anomalous(rate):
     return rate < 50 or rate > 140
 
 # Kafka consumer configuration
-print("Initializing Kafka consumer...")
+logger.info("Initializing Kafka consumer...")
 consumer = Consumer({
     'bootstrap.servers': os.getenv("KAFKA_BROKER", "localhost:9092"),
     'group.id': 'heart_group',
     'auto.offset.reset': 'earliest'
 })
-print("Subscribing to topic 'heart_rate_stream'...")
+logger.info("Subscribing to topic 'heart_rate_stream'...")
 consumer.subscribe(['heart_rate_stream'])
 
 # PostgreSQL connection
@@ -53,7 +66,7 @@ conn = connect_db()
 cursor = conn.cursor()
 
 batch = []
-print("Starting consumer loop...")
+logger.info("Starting consumer loop...")
 
 try:
     while True:
@@ -61,33 +74,33 @@ try:
         if msg is None:
             continue
         if msg.error():
-            print(f"Kafka error: {msg.error()}")
+            logger.error(f"Kafka error: {msg.error()}")
             continue
         try:
             record = json.loads(msg.value().decode('utf-8'))
-            print(f"Received message: {record}")
+            logger.info(f"Received message: {record}")
             anomaly = is_anomalous(record["heart_rate"])
             batch.append((record["customer_id"], record["timestamp"], record["heart_rate"], anomaly))
-            print(f"Batch size: {len(batch)}")
+            logger.debug(f"Batch size: {len(batch)}")
 
             if len(batch) >= 10:
-                print("Inserting batch into PostgreSQL...")
+                logger.info("Inserting batch into PostgreSQL...")
                 start_time = time.time()
                 psycopg2.extras.execute_batch(cursor, """
                     INSERT INTO heartbeats (customer_id, timestamp, heart_rate, anomaly)
                     VALUES (%s, %s, %s, %s)
                 """, batch)
                 conn.commit()
-                print(f"Inserted {len(batch)} records in {time.time() - start_time:.2f} seconds")
+                logger.info(f"Inserted {len(batch)} records in {time.time() - start_time:.2f} seconds")
                 batch.clear()
         except json.JSONDecodeError as e:
-            print(f"Failed to parse message: {e}")
+            logger.error(f"Failed to parse message: {e}")
             continue
 except KeyboardInterrupt:
-    print("Stopping consumer...")
+    logger.info("Stopping consumer...")
 finally:
     if batch:
-        print("Committing remaining batch...")
+        logger.info("Committing remaining batch...")
         psycopg2.extras.execute_batch(cursor, """
             INSERT INTO heartbeats (customer_id, timestamp, heart_rate, anomaly)
             VALUES (%s, %s, %s, %s)
