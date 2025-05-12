@@ -50,12 +50,14 @@ services:
     working_dir: /app
     volumes:
       - ./data_generator.py:/app/data_generator.py
+      - ./logs:/app/logs
     command: >
       bash -c "sleep 10 && pip install confluent-kafka && python data_generator.py --interval 1"
     depends_on:
       - kafka
     environment:
       - KAFKA_BROKER=kafka:9092
+      - LOGS_DIR=/app/logs  
     restart: unless-stopped
 
   consumer:
@@ -63,6 +65,7 @@ services:
     working_dir: /app
     volumes:
       - ./consumer.py:/app/consumer.py
+      - ./logs:/app/logs
     command: >
       bash -c "sleep 10 && pip install psycopg2-binary confluent-kafka && python consumer.py"
     depends_on:
@@ -71,6 +74,7 @@ services:
     environment:
       - POSTGRES_HOST=postgres
       - KAFKA_BROKER=kafka:9092
+      - LOGS_DIR=/app/logs
     restart: unless-stopped
 
 volumes:
