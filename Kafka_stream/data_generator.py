@@ -9,8 +9,21 @@ import time
 from datetime import datetime
 import random
 import os
+import logging
 import argparse
 from confluent_kafka import Producer
+
+# Configure logging
+logs_dir = os.getenv("LOGS_DIR", "logs")  # Default to 'logs' if not set
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] - %(message)s',
+    handlers=[
+        logging.FileHandler(os.path.join(logs_dir, "data_generator.log")),
+        logging.StreamHandler()  # Also output to console
+    ]
+)
+logger = logging.getLogger(__name__)
 
 def generate_data():
     """
@@ -27,9 +40,9 @@ def delivery_report(err, msg):
     Kafka delivery callback.
     """
     if err:
-        print(f"Delivery failed: {err}")
+        logger.error(f"Delivery failed: {err}")
     else:
-        print(f"Message delivered to {msg.topic()} [{msg.partition()}]")
+        logger.info(f"Message delivered to {msg.topic()} [{msg.partition()}]")
 
 def main(args):
     """
@@ -38,7 +51,7 @@ def main(args):
     # Use environment variable for Kafka broker (set in docker-compose.yml)
     kafka_broker = os.getenv("KAFKA_BROKER", "localhost:9092")
     producer = Producer({'bootstrap.servers': kafka_broker})
-    print(f"Sending data to Kafka topic 'heart_rate_stream' every {args.interval}s...")
+    logger.info(f"Sending data to Kafka topic 'heart_rate_stream' every {args.interval}s...")
 
     try:
         while True:
@@ -52,7 +65,7 @@ def main(args):
             producer.flush()  # Ensure message is sent
             time.sleep(args.interval)
     except KeyboardInterrupt:
-        print("Stopping producer...")
+        logger.info("Stopping producer...")
     finally:
         producer.flush()
 
