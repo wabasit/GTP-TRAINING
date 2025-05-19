@@ -1,0 +1,5 @@
+confluent-kafka==2.5.3
+python-dotenv==1.0.1
+pandas
+mysql-connector-python
+psycopg2-binary
