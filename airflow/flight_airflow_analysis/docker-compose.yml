@@ -1,0 +1,99 @@
+services:
+  flight_postgres:
+    image: postgres:13
+    container_name: flight_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flight_analytics_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - airflow-network
+  flight_mysql:
+    image: mysql:8.0
+    container_name: flight_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flight_staging_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - airflow-network
+
+  flight_airflow-webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flight_airflow-webserver
+    depends_on:
+      - flight_postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__WEBSERVER__SECRET_KEY: "airflow_shared_secret_123"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@flight_postgres:5432/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      MYSQL_HOST: flight_mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DB: flight_staging_db
+      POSTGRES_HOST: flight_postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flight_analytics_db
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+      - ./sql:/opt/airflow/sql
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8080:8080"
+    command: webserver
+    networks:
+      - airflow-network
+  flight_airflow-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flight_airflow-scheduler
+    depends_on:
+      - flight_postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__WEBSERVER__SECRET_KEY: "airflow_shared_secret_123"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@flight_postgres:5432/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      MYSQL_HOST: flight_mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DB: flight_staging_db
+      POSTGRES_HOST: flight_postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: flight_analytics_db
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+      - ./sql:/opt/airflow/sql
+      - /etc/localtime:/etc/localtime:ro
+    command: scheduler
+    networks:
+      - airflow-network
+networks:
+  airflow-network:
+    driver: bridge
+volumes:
+  postgres_data:
+  mysql_data:
